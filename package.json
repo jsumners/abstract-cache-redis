@@ -1,0 +1,43 @@
+{
+  "name": "abstract-cache-redis",
+  "version": "1.0.0",
+  "description": "An abstract-cache compliant client targeting Redis",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test-ci",
+    "test-ci": "tap --cov 'test/**/*.test.js'",
+    "pretest": "docker-compose up -d redis",
+    "posttest": "docker-compose down",
+    "lint": "standard | snazzy",
+    "lint-ci": "standard"
+  },
+  "precommit": [
+    "lint",
+    "test"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/jsumners/abstract-cache-redis.git"
+  },
+  "keywords": [
+    "abstract-cache",
+    "cache",
+    "redis"
+  ],
+  "author": "James Sumners <james.sumners@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jsumners/abstract-cache-redis/issues"
+  },
+  "homepage": "https://github.com/jsumners/abstract-cache-redis#readme",
+  "devDependencies": {
+    "snazzy": "^7.0.0",
+    "standard": "^10.0.3",
+    "tap": "^10.7.3"
+  },
+  "dependencies": {
+    "ioredis": "^3.2.1",
+    "ioredis-mock": "^3.3.1",
+    "pre-commit": "^1.2.2"
+  }
+}
