@@ -36,6 +36,19 @@ Notes:
 1. At least one of the `client` or `ioredis` properties must be supplied.
 1. The user is responsible for closing the connection.
 
+## Tests
+
+In order to run the tests for this project a local instance of Reis must
+be running on port `6379`. A `docker-compose.yml` is included to facilitate
+this:
+
+```shell
+$ docker-compose -d up
+$ tap test/*.test.js
+```
+
+`npm test` automates the above.
+
 ## License
 
 [MIT License](http://jsumners.mit-license.org/)
