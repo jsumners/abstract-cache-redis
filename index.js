@@ -6,10 +6,11 @@ function mapKey (inputKey, segment) {
   const parts = []
   if (typeof inputKey === 'string') {
     parts.push(encodeURIComponent(segment))
+    parts.push(encodeURIComponent(inputKey))
   } else {
     parts.push(encodeURIComponent(inputKey.segment))
+    parts.push(encodeURIComponent(inputKey.id))
   }
-  parts.push(encodeURIComponent(inputKey.id))
   return parts.join(':')
 }
 
