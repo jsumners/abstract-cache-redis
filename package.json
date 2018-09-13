@@ -31,13 +31,13 @@
   },
   "homepage": "https://github.com/jsumners/abstract-cache-redis#readme",
   "devDependencies": {
+    "pre-commit": "^1.2.2",
     "snazzy": "^7.0.0",
     "standard": "^10.0.3",
     "tap": "^10.7.3"
   },
   "dependencies": {
     "ioredis": "^3.2.1",
-    "ioredis-mock": "^3.3.1",
-    "pre-commit": "^1.2.2"
+    "ioredis-mock": "^3.3.1"
   }
 }
