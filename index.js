@@ -46,6 +46,14 @@ const proto = {
     return this._redis.exists(_key).then((result) => Boolean(result))
   },
 
+  keys: function (pattern) {
+    const _key = mapKey(pattern, this._segment)
+    return this._redis.keys(_key)
+      .then((result) => {
+        return Promise.resolve(result)
+      })
+  },
+
   quit: function () {
     return this._redis.quit()
   },

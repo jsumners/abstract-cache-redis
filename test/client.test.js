@@ -59,6 +59,18 @@ test('get() returns an item', (t) => {
     .catch(t.threw)
 })
 
+test('keys() returns an array', (t) => {
+  t.plan(2)
+  const client = factory({ client: new MockIoredis() })
+  client.set('foo', 'foo', 1000)
+    .then(() => client.keys('fo*'))
+    .then((result) => {
+      t.type(result, Object)
+      t.is(result[0].split(':')[1], 'foo')
+    })
+    .catch(t.threw)
+})
+
 test('object keys work', (t) => {
   t.plan(3)
   const client = factory({client: new MockIoredis()})
