@@ -50,7 +50,8 @@ const proto = {
     const _key = mapKey(pattern, this._segment)
     return this._redis.keys(_key)
       .then((result) => {
-        return Promise.resolve(result)
+        const res = result.map(e => e.split(':')[1])
+        return Promise.resolve(res)
       })
   },
 

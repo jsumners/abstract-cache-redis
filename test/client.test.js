@@ -6,7 +6,7 @@ const factory = require('../')
 
 test('accepts a pre-existing ioredis connection', (t) => {
   t.plan(1)
-  const client = factory({client: new MockIoredis()})
+  const client = factory({ client: new MockIoredis() })
   client.set('foo', 'foo', 1000)
     .then(() => client.has('foo'))
     .then((result) => t.is(result, true))
@@ -20,7 +20,7 @@ test('throws if invalid configuration', (t) => {
 
 test('has() returns false', (t) => {
   t.plan(1)
-  const client = factory({client: new MockIoredis()})
+  const client = factory({ client: new MockIoredis() })
   client.has('foo')
     .then((result) => t.is(result, false))
     .catch(t.threw)
@@ -28,7 +28,7 @@ test('has() returns false', (t) => {
 
 test('delete() removes item', (t) => {
   t.plan(2)
-  const client = factory({client: new MockIoredis()})
+  const client = factory({ client: new MockIoredis() })
   client.set('foo', 'foo', 1000)
     .then(() => client.has('foo'))
     .then((result) => t.is(result, true))
@@ -40,7 +40,7 @@ test('delete() removes item', (t) => {
 
 test('get() returns `null`', (t) => {
   t.plan(1)
-  const client = factory({client: new MockIoredis()})
+  const client = factory({ client: new MockIoredis() })
   client.get('foo')
     .then((result) => t.is(result, null))
     .catch(t.threw)
@@ -48,7 +48,7 @@ test('get() returns `null`', (t) => {
 
 test('get() returns an item', (t) => {
   t.plan(3)
-  const client = factory({client: new MockIoredis()})
+  const client = factory({ client: new MockIoredis() })
   client.set('foo', 'foo', 1000)
     .then(() => client.get('foo'))
     .then((result) => {
@@ -66,16 +66,16 @@ test('keys() returns an array', (t) => {
     .then(() => client.keys('fo*'))
     .then((result) => {
       t.type(result, Object)
-      t.is(result[0].split(':')[1], 'foo')
+      t.is(result[0], 'foo')
     })
     .catch(t.threw)
 })
 
 test('object keys work', (t) => {
   t.plan(3)
-  const client = factory({client: new MockIoredis()})
-  client.set({id: 'foo', segment: 'bar'}, 'foo', 1000)
-    .then(() => client.get({id: 'foo', segment: 'bar'}))
+  const client = factory({ client: new MockIoredis() })
+  client.set({ id: 'foo', segment: 'bar' }, 'foo', 1000)
+    .then(() => client.get({ id: 'foo', segment: 'bar' }))
     .then((result) => {
       t.type(result, Object)
       t.ok(result.item)
@@ -86,7 +86,7 @@ test('object keys work', (t) => {
 
 test('disconnect works', (t) => {
   t.plan(1)
-  const client = factory({ioredis: {}})
+  const client = factory({ ioredis: {} })
   client.set('foo', 'foo', 1000)
     .then(() => client.disconnect())
     .then(t.pass)
@@ -95,7 +95,7 @@ test('disconnect works', (t) => {
 
 test('quit works', (t) => {
   t.plan(1)
-  const client = factory({ioredis: {}})
+  const client = factory({ ioredis: {} })
   client.set('foo', 'foo', 1000)
     .then(() => client.quit())
     .then(t.pass)
