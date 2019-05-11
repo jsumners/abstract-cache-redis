@@ -5,7 +5,7 @@ This module provides a cache client that is compliant with the
 client implements the `await` style of the protocol.
 
 In addition to the API mandated by the protocol, the client exposes
-`disconnect` and `quit` methods. These map to the
+`keys`, `disconnect` and `quit` methods. These map to the
 [ioredis](https://npm.im/ioredis) methods of the same names. These are only
 useful if you create the client with connection configuration instead of an
 already connected Redis client.
@@ -19,6 +19,12 @@ const client = require('abstract-cache-redis')({ioredis: {}})
 client.set('foo', 'foo', 1000)
   .then(() => client.has('foo'))
   .then(console.log) // true
+  .then(() => client.quit())
+  .catch(console.error)
+
+client.set('foo', 'foo', 1000)
+  .then(() => client.keys('fo*'))
+  .then(console.log) // [ 'foo' ]
   .then(() => client.quit())
   .catch(console.error)
 ```
