@@ -71,6 +71,65 @@ test('keys() returns an array', (t) => {
     .catch(t.threw)
 })
 
+test('scan() returns an array when only cursor is provided', (t) => {
+  t.plan(4)
+  const client = factory({ client: new MockIoredis() })
+  client.set('foo', 'foo', 1000)
+    .then(() => client.scan(0))
+    .then((result) => {
+      t.type(result, Array)
+      t.type(result[0], 'number')
+      t.type(result[1], Array)
+      t.is(result[1][0], 'foo')
+    })
+    .catch(t.threw)
+})
+
+test('scan() returns an array when match pattern is provided', (t) => {
+  t.plan(4)
+  const client = factory({ client: new MockIoredis() })
+  client.set('foo', 'foo', 1000)
+    .then(() => client.scan(0, 'MATCH', 'fo*'))
+    .then((result) => {
+      t.type(result, Array)
+      t.type(result[0], 'number')
+      t.type(result[1], Array)
+      t.is(result[1][0], 'foo')
+    })
+    .catch(t.threw)
+})
+
+test('scan() returns an array when match pattern and count is provided', (t) => {
+  t.plan(5)
+  const client = factory({ client: new MockIoredis() })
+  client.set('foo', 'foo', 1000)
+    .then(() => client.set('bar', 'bar', 1000).then(
+      () => client.scan(0, 'MATCH', '*', 'COUNT', 10))
+      .then((result) => {
+        t.type(result, Array)
+        t.type(result[0], 'number')
+        t.type(result[1], Array)
+        t.is(result[1][0], 'foo')
+        t.is(result[1][1], 'bar')
+      })
+    )
+    .catch(t.threw)
+})
+
+test('scanStream() returns an readable stream', (t) => {
+  t.plan(2)
+  const client = factory({ client: new MockIoredis() })
+  client.set('foo', 'foo', 1000)
+    .then(() => client.set('bar', 'bar', 1000).then(
+      () => client.scanStream())
+      .then((result) => {
+        t.type(result, Object)
+        t.type(result.on, Function)
+      })
+    )
+    .catch(t.threw)
+})
+
 test('object keys work', (t) => {
   t.plan(3)
   const client = factory({ client: new MockIoredis() })

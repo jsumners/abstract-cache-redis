@@ -5,7 +5,7 @@ This module provides a cache client that is compliant with the
 client implements the `await` style of the protocol.
 
 In addition to the API mandated by the protocol, the client exposes
-`keys`, `disconnect` and `quit` methods. These map to the
+`keys`, `scan`, `scanStream`, `disconnect` and `quit` methods. These map to the
 [ioredis](https://npm.im/ioredis) methods of the same names. The `disconnect`
 and `quit` methods are only useful if you create the client with connection
 configuration instead of an already connected Redis client.

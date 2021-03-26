@@ -1,5 +1,5 @@
 'use strict'
-
+const {Transform, Readable} = require('stream')
 const Redis = require('ioredis')
 
 function mapKey (inputKey, segment) {
@@ -53,6 +53,33 @@ const proto = {
         const res = result.map(e => e.split(':')[1])
         return Promise.resolve(res)
       })
+  },
+
+  scan: function (cursor, matchOption, pattern, countOption, count) {
+    const _key = pattern && mapKey(pattern, this._segment)
+    let args = [cursor]
+    matchOption && args.push(matchOption)
+    _key && args.push(_key)
+    countOption && args.push(countOption)
+    !isNaN(count) && args.push(count)
+    return this._redis
+      .scan(...args)
+      .then(([nextCursor, result]) =>
+        Promise.resolve([nextCursor, result.map((e) => e.split(':')[1])])
+      )
+  },
+
+  scanStream: function (options) {
+    const segmentTransformer = new Transform({
+      readableObjectMode: true,
+      writableObjectMode: true,
+      transform (chunk, encoding, done) {
+        this.push(chunk.map((e) => e.split(':')[1]))
+        done()
+      }
+    })
+    const stream = this._redis.scanStream(options).pipe(segmentTransformer)
+    return Readable.from(stream)
   },
 
   quit: function () {
