@@ -38,6 +38,32 @@ test('delete() removes item', (t) => {
     .catch(t.threw)
 })
 
+test('set() sets an item', (t) => {
+  t.plan(4)
+  const client = factory({ client: new MockIoredis() })
+  client.set('foo', 'foo', 10000)
+    .then(() => client.get('foo'))
+    .then((result) => {
+      t.type(result, Object)
+      t.ok(result.item)
+      t.is(result.item, 'foo')
+      t.is(result.ttl > 0, true)
+    })
+    .catch(t.threw)
+})
+
+test('set() sets an item with propper expiry', (t) => {
+  t.plan(2)
+  const client = factory({ client: new MockIoredis() })
+  client.set('foo', 'foo', 0)
+    .then(() => client.get('foo'))
+    .then((result) => {
+      t.type(result, Object)
+      t.is(result.ttl <= 0, true)
+    })
+    .catch(t.threw)
+})
+
 test('get() returns `null`', (t) => {
   t.plan(1)
   const client = factory({ client: new MockIoredis() })

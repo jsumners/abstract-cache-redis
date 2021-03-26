@@ -93,13 +93,7 @@ const proto = {
       stored: Date.now(),
       ttl
     }
-    // Supposedly there is some sort of "PX" option for Redis's `set()` method,
-    // but I have no idea how to use it. At least not with ioredis.
-    return this._redis.set(_key, JSON.stringify(payload))
-      .then(() => {
-        const ttlSec = Math.max(1, Math.floor(ttl / 1000))
-        return this._redis.expire(_key, ttlSec)
-      })
+    return this._redis.set(_key, JSON.stringify(payload), 'PX', ttl)
   }
 }
 
