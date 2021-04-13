@@ -1,5 +1,5 @@
 'use strict'
-const {Transform, Readable} = require('stream')
+const { Transform, Readable } = require('stream')
 const Redis = require('ioredis')
 
 function mapKey (inputKey, segment) {
@@ -57,7 +57,7 @@ const proto = {
 
   scan: function (cursor, matchOption, pattern, countOption, count) {
     const _key = pattern && mapKey(pattern, this._segment)
-    let args = [cursor]
+    const args = [cursor]
     matchOption && args.push(matchOption)
     _key && args.push(_key)
     countOption && args.push(countOption)
