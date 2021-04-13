@@ -1,0 +1,37 @@
+name: ci
+
+on:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 15.x]
+        os: [ubuntu-latest]
+
+    services:
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v2.1.4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install
+        run: |
+          npm install --ignore-scripts
+
+      - name: Lint
+        run: npm run lint-ci
+
+      - name: Run tests
+        run: npm run test-ci
