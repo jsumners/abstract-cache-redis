@@ -1,5 +1,5 @@
 'use strict'
-
+const {Transform, Readable} = require('stream')
 const Redis = require('ioredis')
 
 function mapKey (inputKey, segment) {
@@ -55,6 +55,33 @@ const proto = {
       })
   },
 
+  scan: function (cursor, matchOption, pattern, countOption, count) {
+    const _key = pattern && mapKey(pattern, this._segment)
+    let args = [cursor]
+    matchOption && args.push(matchOption)
+    _key && args.push(_key)
+    countOption && args.push(countOption)
+    !isNaN(count) && args.push(count)
+    return this._redis
+      .scan(...args)
+      .then(([nextCursor, result]) =>
+        Promise.resolve([nextCursor, result.map((e) => e.split(':')[1])])
+      )
+  },
+
+  scanStream: function (options) {
+    const segmentTransformer = new Transform({
+      readableObjectMode: true,
+      writableObjectMode: true,
+      transform (chunk, encoding, done) {
+        this.push(chunk.map((e) => e.split(':')[1]))
+        done()
+      }
+    })
+    const stream = this._redis.scanStream(options).pipe(segmentTransformer)
+    return Readable.from(stream)
+  },
+
   quit: function () {
     return this._redis.quit()
   },
@@ -66,13 +93,7 @@ const proto = {
       stored: Date.now(),
       ttl
     }
-    // Supposedly there is some sort of "PX" option for Redis's `set()` method,
-    // but I have no idea how to use it. At least not with ioredis.
-    return this._redis.set(_key, JSON.stringify(payload))
-      .then(() => {
-        const ttlSec = Math.max(1, Math.floor(ttl / 1000))
-        return this._redis.expire(_key, ttlSec)
-      })
+    return this._redis.set(_key, JSON.stringify(payload), 'PX', ttl)
   }
 }
 
